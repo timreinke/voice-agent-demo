@@ -1,8 +1,11 @@
-import { RealtimeAgent, RealtimeSession } from "@openai/agents/realtime";
+import { RealtimeAgent, RealtimeSession, tool } from "@openai/agents/realtime";
 
 import { Store } from "../utils/store";
 import { worker } from "../service/worker";
 import { Workspace } from "../workspace";
+import { z } from "zod";
+
+import documentEditorToolDescription from "./document-editor-tool-description.txt";
 
 export namespace Agent {
   const state = Store.create<{
@@ -12,8 +15,37 @@ export namespace Agent {
   });
 
   const TOOLS = [
-    ...Workspace.Tools,
-  ]
+    tool({
+      name: "document-editor",
+      description: documentEditorToolDescription,
+      parameters: z.object({
+        instructions: z.string(),
+      }),
+      strict: true,
+      execute: async ({ instructions }) => {
+        const document = Workspace.getDocument();
+        const response = await worker.agents["document-editor"].$post({
+          json: { document, instructions },
+        });
+
+        if (response.status !== 200) {
+          console.log(response.text());
+          return {
+            success: false,
+            error: "Failed to edit document",
+          };
+        }
+
+        const { newDocument } = await response.json();
+        Workspace.setDocument(newDocument);
+
+        return {
+          success: true,
+          newDocument,
+        };
+      },
+    }),
+  ];
 
   export function use() {
     const s = Store.use(state);

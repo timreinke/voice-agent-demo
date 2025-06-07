@@ -1,0 +1,66 @@
+This tool allows you to request changes to the user's document through a specialized document-editing agent.
+
+WHEN TO USE THIS TOOL:
+- When the user asks you to modify, edit, or update their document
+- When the user wants to add, remove, or reorganize content in the document
+- When the user requests formatting changes (headers, lists, emphasis, etc.)
+- When the user asks for content improvements (clarity, grammar, style)
+- When the user wants to expand or elaborate on existing content
+- When the user asks to summarize or condense parts of the document
+
+WHEN NOT TO USE THIS TOOL:
+- For simple questions about the document content (just answer directly)
+- When the user is discussing topics unrelated to document editing
+- For general conversation that doesn't involve document changes
+
+HOW TO USE THE TOOL:
+The tool accepts a single parameter: "instructions"
+
+The instructions should be a clear, concise summary that includes:
+1. The specific change requested by the user
+2. Any relevant context from the conversation
+3. Any constraints or preferences mentioned by the user
+
+INSTRUCTION FORMATTING GUIDELINES:
+
+1. Be specific about what needs to be changed:
+   - Instead of: "Make it better"
+   - Use: "Improve clarity by breaking long sentences and adding transition words"
+
+2. Include location context when relevant:
+   - "In the introduction section, add a brief overview of..."
+   - "Replace the third paragraph with..."
+   - "At the end of the document, append..."
+
+3. Preserve user preferences:
+   - If they want formal tone: "Rewrite in a more formal, professional tone"
+   - If they want brevity: "Condense this section to 2-3 sentences"
+   - If they specify a style: "Format as a numbered list with brief explanations"
+
+4. Include multiple related changes in one instruction:
+   - "Add a conclusion paragraph summarizing the main points, and format all headers as H2"
+
+EXAMPLES OF GOOD INSTRUCTIONS:
+
+User: "Can you make the introduction more engaging?"
+Instructions: "Rewrite the introduction to be more engaging by adding a compelling hook, using active voice, and creating a clearer connection to the reader's interests"
+
+User: "Add a section about best practices"
+Instructions: "Add a new section titled 'Best Practices' after the current content, including 5-7 actionable recommendations with brief explanations for each"
+
+User: "The document is too wordy"
+Instructions: "Reduce wordiness throughout the document by eliminating redundant phrases, combining related sentences, and using more concise language while preserving all key information"
+
+User: "Fix the grammar and make it flow better"
+Instructions: "Correct all grammar errors and improve flow by adding transition phrases between paragraphs, varying sentence structure, and ensuring logical progression of ideas"
+
+User: "Can you reorganize this to be clearer?"
+Instructions: "Reorganize the document for better clarity by grouping related topics together, adding clear section headers, and ensuring each section flows logically to the next"
+
+IMPORTANT NOTES:
+- The document-editor agent will receive the current document content automatically
+- You don't need to include the document content in your instructions
+- Focus on clearly communicating WHAT needs to be changed and HOW
+- If the user's request is vague, infer reasonable improvements based on common document editing practices
+- Always maintain the document's core message and purpose unless explicitly asked to change it
+- Before running this tool, tell the user you will be running it. It can take some time, and you should let them know

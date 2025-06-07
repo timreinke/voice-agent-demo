@@ -1,6 +1,14 @@
 import { FC } from "hono/jsx";
-
+import { Workspace } from "../app/workspace";
 export const DocumentPanel: FC = () => {
+  const { document } = Workspace.use();
+
+  let html = null;
+  console.log(document);
+  if (document) {
+    html = <div dangerouslySetInnerHTML={{ __html: document }} />;
+  }
+
   return (
     <div className="h-full bg-white p-6">
       <div className="flex items-center justify-between mb-4">
@@ -14,12 +22,14 @@ export const DocumentPanel: FC = () => {
           </button>
         </div>
       </div>
-      
+
       <div className="h-full border border-gray-200 rounded-lg p-4 bg-gray-50">
         <div className="h-full flex items-center justify-center text-gray-500">
           <div className="text-center">
             <p className="text-lg mb-2">Document workspace</p>
-            <p className="text-sm">Generated content will appear here</p>
+            {html || (
+              <p className="text-sm">Generated content will appear here</p>
+            )}
           </div>
         </div>
       </div>

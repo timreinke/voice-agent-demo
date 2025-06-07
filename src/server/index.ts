@@ -48,9 +48,8 @@ ${instructions}`
         const result = await run(documentEditorAgent(), initialMessage)
         
         return c.json({ 
-          result: result.finalOutput,
-          history: result.history 
-        })
+          newDocument: result.finalOutput || "",
+        }, 200)
       } catch (error) {
         console.error('Error running document editor agent:', error)
         return c.json({ error: 'Failed to edit document' }, 500)
