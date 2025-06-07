@@ -12,8 +12,8 @@ importers:
         specifier: ^0.7.0
         version: 0.7.0(hono@4.7.11)(zod@3.25.56)
       '@openai/agents':
-        specifier: ^0.0.4
-        version: 0.0.4(ws@8.18.2)(zod@3.25.56)
+        specifier: ^0.0.3
+        version: 0.0.3(ws@8.18.2)(zod@3.25.56)
       hono:
         specifier: ^4.7.11
         version: 4.7.11
@@ -543,22 +543,22 @@ packages:
     resolution: {integrity: sha512-KG1CZhZfWg+u8pxeM/mByJDScJSrjjxLc8fwQqbsS8xCjBmQfMNEBTotYdNanKekepnfRI85GtgQlctLFpcYPw==}
     engines: {node: '>=18'}
 
-  '@openai/agents-core@0.0.4':
-    resolution: {integrity: sha512-BKRjfxlQ4ql6vjw4hP9ePXic3ANbaKp4IWqqhya3R5m7Yqr/cITwL/3enr/BEuSdNkKqc8/QwogtYUGYR37F7A==}
+  '@openai/agents-core@0.0.3':
+    resolution: {integrity: sha512-3+y5vXcEHlUaaderVs3jHwWNNHtU8+B939eifFE2ZUx8ZTyIyA5sJBZkHgD4RfuS2iGlNCMB6cglMMSkKp0Qow==}
     peerDependencies:
       zod: ^3.25.40
     peerDependenciesMeta:
       zod:
         optional: true
 
-  '@openai/agents-openai@0.0.4':
-    resolution: {integrity: sha512-LW1R+WrkD/Wy7G5X0AsUQEgj+aQk+GedZR9MMJ8yAbFl1W1ynCHTY6fMZfmxtTu6LR9PTy8LxsR79WSwYqoPPQ==}
+  '@openai/agents-openai@0.0.3':
+    resolution: {integrity: sha512-BFp/nJacyqRGfdiBgU5PyN1JOrCFY5D42g8hAqYg081mi8HvdCAGr0EEXBDo9H9hgL1+TcQsruqQnoV43e3wVg==}
 
-  '@openai/agents-realtime@0.0.4':
-    resolution: {integrity: sha512-v63R5bJr3epi7rZ/tFeTSP+cgGi8Yk0XxwTkJJJS6HcQOjpIjPQkn+eAYXsTopwolYv6YC4CymRkpcIDWNgGDQ==}
+  '@openai/agents-realtime@0.0.3':
+    resolution: {integrity: sha512-dKEXqkfpeB4a6/65UFFvfhpEaQNsg4nDU1PtXBdahO8u5JqBEpm0j2Z5VNIIZ+gsyB7BCWlRUvvcafd+e40viQ==}
 
-  '@openai/agents@0.0.4':
-    resolution: {integrity: sha512-anLV95zQc9YVmOaF6HXVhazeO7K/w0S15dkBPYHC3RDfXLN5QUI/VfCQpz1d8ehTz9zKbrokVOZ1loh+VHW2Ag==}
+  '@openai/agents@0.0.3':
+    resolution: {integrity: sha512-Kz/LnZr4tHAHQi0O8err5DXXAZXMxzz0quz1/N52KLhSGbhboKU7VYr/VrgBO97scjULeoyVD4VoJPzSt/d8Yg==}
 
   '@parcel/watcher-android-arm64@2.5.1':
     resolution: {integrity: sha512-KF8+j9nNbUN8vzOFDpRMsaKBHZ/mcjEjMToVMJOhTozkDonQFFrRcfdLWn6yWKCmJKmdVxSgHiYvTCef4/qcBA==}
@@ -1756,7 +1756,7 @@ snapshots:
       - supports-color
     optional: true
 
-  '@openai/agents-core@0.0.4(ws@8.18.2)(zod@3.25.56)':
+  '@openai/agents-core@0.0.3(ws@8.18.2)(zod@3.25.56)':
     dependencies:
       '@openai/zod': zod@3.25.56
       debug: 4.4.1
@@ -1768,9 +1768,9 @@ snapshots:
       - supports-color
       - ws
 
-  '@openai/agents-openai@0.0.4(ws@8.18.2)(zod@3.25.56)':
+  '@openai/agents-openai@0.0.3(ws@8.18.2)(zod@3.25.56)':
     dependencies:
-      '@openai/agents-core': 0.0.4(ws@8.18.2)(zod@3.25.56)
+      '@openai/agents-core': 0.0.3(ws@8.18.2)(zod@3.25.56)
       '@openai/zod': zod@3.25.56
       debug: 4.4.1
       openai: 5.1.1(ws@8.18.2)(zod@3.25.56)
@@ -1779,9 +1779,9 @@ snapshots:
       - ws
       - zod
 
-  '@openai/agents-realtime@0.0.4(zod@3.25.56)':
+  '@openai/agents-realtime@0.0.3(zod@3.25.56)':
     dependencies:
-      '@openai/agents-core': 0.0.4(ws@8.18.2)(zod@3.25.56)
+      '@openai/agents-core': 0.0.3(ws@8.18.2)(zod@3.25.56)
       '@types/ws': 8.18.1
       debug: 4.4.1
       ws: 8.18.2
@@ -1791,11 +1791,11 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@openai/agents@0.0.4(ws@8.18.2)(zod@3.25.56)':
+  '@openai/agents@0.0.3(ws@8.18.2)(zod@3.25.56)':
     dependencies:
-      '@openai/agents-core': 0.0.4(ws@8.18.2)(zod@3.25.56)
-      '@openai/agents-openai': 0.0.4(ws@8.18.2)(zod@3.25.56)
-      '@openai/agents-realtime': 0.0.4(zod@3.25.56)
+      '@openai/agents-core': 0.0.3(ws@8.18.2)(zod@3.25.56)
+      '@openai/agents-openai': 0.0.3(ws@8.18.2)(zod@3.25.56)
+      '@openai/agents-realtime': 0.0.3(zod@3.25.56)
       debug: 4.4.1
       openai: 5.1.1(ws@8.18.2)(zod@3.25.56)
     transitivePeerDependencies:

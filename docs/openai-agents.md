@@ -126,6 +126,59 @@ const contextualAgent = new Agent({
 - **Output Validation**: Use schemas for consistent response formats
 - **Performance**: Consider model settings and tool execution overhead
 
+## Running Agents
+
+### Basic Execution
+Run agents using the `run()` utility function:
+
+```javascript
+import { run } from 'openai-agents';
+
+const result = await run(agent, 'Your input message');
+console.log(result.finalOutput);
+```
+
+### Run Configuration
+- `stream`: Enable streaming events (default: false)
+- `context`: Pass context object matching agent's generic type
+- `maxTurns`: Safety limit for agent turns (default: 10)
+- `signal`: AbortSignal for cancellation support
+
+### Input Formats
+- String: Single user message
+- Array: List of input items
+- RunState: For human-in-the-loop scenarios
+
+### RunResult Structure
+Non-streaming results contain:
+- `finalOutput`: The agent's final output (string, JSON, or undefined)
+- `history`: Complete conversation history
+- `lastAgent`: The final agent that ran
+- `newItems`: Generated run items during execution
+- `state`: Serializable run state
+- `interruptions`: Tool approval items requiring handling
+- `rawResponses`: Raw model responses
+- `inputGuardrailResults` / `outputGuardrailResults`: Validation results
+
+### Multi-turn Conversations
+Maintain conversation history across runs:
+
+```javascript
+let history = [{ type: 'user', content: 'Initial message' }];
+for (let i = 0; i < 5; i++) {
+  const result = await run(agent, history);
+  history = result.history;
+  history.push({ type: 'user', content: 'Follow-up message' });
+}
+```
+
+### Context Usage
+```javascript
+const result = await run(agent, 'Process this', {
+  context: { userId: '123', role: 'admin' }
+});
+```
+
 ## Next Steps
 
 1. **Agent Running**: Learn execution patterns and conversation management

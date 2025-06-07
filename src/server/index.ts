@@ -1,6 +1,8 @@
 import { Hono } from 'hono'
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
+import { run, setDefaultOpenAIKey } from '@openai/agents'
+import { documentEditorAgent } from './agents/document-editor'
 
 type Bindings = {
   OPENAI_API_KEY: string
@@ -12,16 +14,53 @@ const tokenRequestSchema = z.object({
   model: z.string().optional().default('gpt-4o-realtime-preview-2025-06-03')
 })
 
+const documentEditorRequestSchema = z.object({
+  document: z.string(),
+  instructions: z.string()
+})
+
 interface OpenAISessionResponse {
   client_secret: {
     value: string
   }
 }
 
-const routes = app.post(
-  '/api/openai/token',
-  zValidator('json', tokenRequestSchema),
-  async (c) => {
+const routes = app
+  .use('/agents/*', async (c, next) => {
+    setDefaultOpenAIKey(c.env.OPENAI_API_KEY);
+    await next()
+  })
+  .post(
+    '/agents/document-editor',
+    zValidator('json', documentEditorRequestSchema),
+    async (c) => {
+      try {
+        const { document, instructions } = c.req.valid('json')
+        
+        // Format the initial message with the document and instructions
+        const initialMessage = `Document to edit:
+${document}
+
+Instructions:
+${instructions}`
+        
+        // Run the agent
+        const result = await run(documentEditorAgent(), initialMessage)
+        
+        return c.json({ 
+          result: result.finalOutput,
+          history: result.history 
+        })
+      } catch (error) {
+        console.error('Error running document editor agent:', error)
+        return c.json({ error: 'Failed to edit document' }, 500)
+      }
+    }
+  )
+  .post(
+    '/api/openai/token',
+    zValidator('json', tokenRequestSchema),
+    async (c) => {
     try {
       const openaiApiKey = c.env.OPENAI_API_KEY
       if (!openaiApiKey) {
