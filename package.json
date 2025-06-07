@@ -1,0 +1,28 @@
+{
+  "name": "agent-sdk-voice-canvas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "pnpm run build:client && pnpm run build:server && pnpm run copy:assets",
+    "build:client": "esbuild src/client/main.tsx --bundle --outfile=dist/static/client.js --jsx-import-source=hono/jsx/dom",
+    "build:server": "esbuild src/server/index.ts --bundle --outfile=dist/worker.js --format=esm --target=es2022",
+    "copy:assets": "mkdir -p dist/static && cp -r public/* dist/static/ 2>/dev/null || true",
+    "dev": "wrangler dev --live-reload",
+    "deploy": "wrangler deploy",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@openai/agents": "^0.0.4",
+    "hono": "^4.7.11"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250607.0",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.8.3",
+    "wrangler": "^4.19.1"
+  }
+}

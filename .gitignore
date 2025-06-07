@@ -1,0 +1,4 @@
+.dev.vars
+.claude
+node_modules
+dist
