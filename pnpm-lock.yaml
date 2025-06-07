@@ -8,12 +8,18 @@ importers:
 
   .:
     dependencies:
+      '@hono/zod-validator':
+        specifier: ^0.7.0
+        version: 0.7.0(hono@4.7.11)(zod@3.25.56)
       '@openai/agents':
         specifier: ^0.0.4
         version: 0.0.4(ws@8.18.2)(zod@3.25.56)
       hono:
         specifier: ^4.7.11
         version: 4.7.11
+      zod:
+        specifier: ^3.25.56
+        version: 3.25.56
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20250607.0
@@ -386,6 +392,12 @@ packages:
   '@fastify/busboy@2.1.1':
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
+
+  '@hono/zod-validator@0.7.0':
+    resolution: {integrity: sha512-qe2ZE6sHFE98dcUrbYMtS3bAV8hqcCOflykvZga2S7XhmNSZzT+dIz4OuMILsjLHkJw9JMn912/dB7dQOmuPvg==}
+    peerDependencies:
+      hono: '>=3.9.0'
+      zod: ^3.25.0
 
   '@img/sharp-darwin-arm64@0.33.5':
     resolution: {integrity: sha512-UT4p+iz/2H4twwAoLCqfA9UH5pI6DggwKEGuaPy7nCVQ8ZsiY5PIcrRvD1DzuY3qYL07NtIQcWnBSY/heikIFQ==}
@@ -1258,6 +1270,11 @@ snapshots:
     optional: true
 
   '@fastify/busboy@2.1.1': {}
+
+  '@hono/zod-validator@0.7.0(hono@4.7.11)(zod@3.25.56)':
+    dependencies:
+      hono: 4.7.11
+      zod: 3.25.56
 
   '@img/sharp-darwin-arm64@0.33.5':
     optionalDependencies:

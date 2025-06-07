@@ -16,8 +16,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@hono/zod-validator": "^0.7.0",
     "@openai/agents": "^0.0.4",
-    "hono": "^4.7.11"
+    "hono": "^4.7.11",
+    "zod": "^3.25.56"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250607.0",

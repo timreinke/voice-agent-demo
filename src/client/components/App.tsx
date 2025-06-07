@@ -1,5 +1,7 @@
 import { FC, useState, useEffect } from "hono/jsx";
 import { RealtimeAgent, RealtimeSession } from "@openai/agents/realtime";
+import { hc } from "hono/client";
+import type { AppType } from "../../server/index";
 
 export const App: FC = () => {
   const [session, setSession] = useState<RealtimeSession | null>(null);
@@ -9,10 +11,12 @@ export const App: FC = () => {
       try {
         console.log("Initializing voice session...");
 
-        // Get ephemeral token
-        const tokenResponse = await fetch("/api/openai/token", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        // Create typed client
+        const client = hc<AppType>(window.location.origin);
+
+        // Get ephemeral token with typed RPC
+        const tokenResponse = await client.api.openai.token.$post({
+          json: {},
         });
 
         if (!tokenResponse.ok) {
@@ -23,10 +27,9 @@ export const App: FC = () => {
         console.log("Got ephemeral token");
 
         const agent = new RealtimeAgent({
-          name: 'Assistant',
-          instructions: 'You are a helpful assistant.',
+          name: "Assistant",
+          instructions: "You are a helpful assistant.",
         });
-        
 
         // Create RealtimeSession
         const realtimeSession = new RealtimeSession(agent);
@@ -75,7 +78,7 @@ export const App: FC = () => {
         realtimeSession.on("transport_event", (event) => {
           console.log("Transport event", event);
         });
-        
+
         // Connect to the session
         await realtimeSession.connect({
           apiKey: token,
