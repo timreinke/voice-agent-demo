@@ -6,28 +6,17 @@ export const StatusBar: FC = () => {
 
   return (
     <div className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
-      <div className="flex items-center space-x-4">
-        <h1 className="text-xl font-semibold text-gray-900">Agent SDK Voice Canvas</h1>
-        <div
-          className={`px-3 py-1 rounded-full text-sm font-medium ${
-            isConnected
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800"
-          }`}
-        >
-          {isConnected ? "🟢 Connected" : "🔴 Disconnected"}
-        </div>
-      </div>
+      <h1 className="text-xl font-semibold text-gray-900">Agent SDK Voice Canvas</h1>
       
       <button
         onClick={isConnected ? Agent.disconnect : Agent.connect}
         className={`px-4 py-2 text-sm font-medium text-white border-none rounded cursor-pointer transition-colors ${
           isConnected
-            ? "bg-red-600 hover:bg-red-700"
-            : "bg-blue-600 hover:bg-blue-700"
+            ? "bg-emerald-600 hover:bg-emerald-700"
+            : "bg-slate-600 hover:bg-slate-700"
         }`}
       >
-        {isConnected ? "Disconnect" : "Connect"}
+        {isConnected ? "🟢 Disconnect" : "🔴 Connect"}
       </button>
     </div>
   );
