@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "pnpm run build:client && pnpm run build:server && pnpm run copy:assets",
+    "build": "pnpm run build:css && pnpm run build:client && pnpm run build:server && pnpm run copy:assets",
+    "build:css": "npx @tailwindcss/cli -i ./src/styles.css -o ./dist/static/styles.css",
     "build:client": "esbuild src/client/main.tsx --bundle --outfile=dist/static/client.js --jsx-import-source=hono/jsx/dom",
     "build:server": "esbuild src/server/index.ts --bundle --outfile=dist/worker.js --format=esm --target=es2022",
     "copy:assets": "mkdir -p dist/static && cp -r public/* dist/static/ 2>/dev/null || true",
@@ -23,7 +24,9 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250607.0",
+    "@tailwindcss/cli": "^4.1.8",
     "esbuild": "^0.24.0",
+    "tailwindcss": "^4.1.8",
     "typescript": "^5.8.3",
     "wrangler": "^4.19.1"
   }
