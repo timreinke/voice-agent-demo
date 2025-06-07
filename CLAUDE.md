@@ -28,7 +28,6 @@ This is a full-stack Cloudflare Workers application using Hono framework with JS
 ### Project Structure
 - `src/server/` - Hono API routes and middleware for Cloudflare Workers
 - `src/client/` - JSX components using Hono's JSX DOM implementation
-- `src/shared/` - TypeScript types shared between client and server
 - `dist/` - Built assets (worker.js and static files)
 - `public/` - Static assets copied to dist/static/
 

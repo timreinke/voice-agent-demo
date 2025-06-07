@@ -14,8 +14,6 @@ src/
 ├── client/
 │   ├── components/        # JSX client components
 │   └── main.tsx           # Client entry point
-├── shared/
-│   └── types.ts           # Shared types
 dist/                      # Built static assets
 public/                    # Additional static files
 ```

@@ -12,14 +12,6 @@ const tokenRequestSchema = z.object({
   model: z.string().optional().default('gpt-4o-realtime-preview-2025-06-03')
 })
 
-const tokenResponseSchema = z.object({
-  token: z.string()
-})
-
-const errorResponseSchema = z.object({
-  error: z.string()
-})
-
 interface OpenAISessionResponse {
   client_secret: {
     value: string
