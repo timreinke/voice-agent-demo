@@ -3,34 +3,31 @@ import { Workspace } from "../app/workspace";
 export const DocumentPanel: FC = () => {
   const { document } = Workspace.use();
 
-  let html = null;
-  console.log(document);
-  if (document) {
-    html = <div dangerouslySetInnerHTML={{ __html: document }} />;
-  }
+  const handleNew = () => {
+    if (confirm("Are you sure you want to create a new document? This will clear the current content.")) {
+      Workspace.setDocument(Workspace.getDefaultDocument());
+    }
+  };
 
   return (
-    <div className="h-full bg-white p-6">
+    <div className="h-full bg-gray-50 p-6 flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-gray-900">Document Canvas</h2>
         <div className="flex space-x-2">
-          <button className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded cursor-pointer">
+          <button 
+            onClick={handleNew}
+            className="px-3 py-1 text-sm bg-white hover:bg-gray-50 border border-gray-300 rounded cursor-pointer">
             New
           </button>
-          <button className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded cursor-pointer">
+          <button className="px-3 py-1 text-sm bg-white hover:bg-gray-50 border border-gray-300 rounded cursor-pointer">
             Save
           </button>
         </div>
       </div>
 
-      <div className="h-full border border-gray-200 rounded-lg p-4 bg-gray-50">
-        <div className="h-full flex items-center justify-center text-gray-500">
-          <div className="text-center">
-            <p className="text-lg mb-2">Document workspace</p>
-            {html || (
-              <p className="text-sm">Generated content will appear here</p>
-            )}
-          </div>
+      <div className="flex-1 bg-white border border-gray-200 rounded-lg shadow-sm overflow-auto">
+        <div className="document-content p-8 max-w-4xl mx-auto">
+          <div dangerouslySetInnerHTML={{ __html: document }} />
         </div>
       </div>
     </div>
