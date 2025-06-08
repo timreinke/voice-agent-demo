@@ -1,17 +1,12 @@
 import { FC } from "hono/jsx";
-import type { Source, Sources } from "../app/sources";
+import type { Source } from "../app/sources";
+import { Sources } from "../app/sources";
 
 interface SourceItemProps {
   source: Source;
-  onRemove: (id: string) => void;
-  onAddNote: (id: string, note: string) => void;
 }
 
-export const SourceItem: FC<SourceItemProps> = ({
-  source,
-  onRemove,
-  onAddNote,
-}) => {
+export const SourceItem: FC<SourceItemProps> = ({ source }) => {
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleTimeString();
   };
@@ -59,7 +54,7 @@ export const SourceItem: FC<SourceItemProps> = ({
           )}
         </div>
         <button
-          onClick={() => onRemove(source.id)}
+          onClick={() => Sources.removeSource(source.id)}
           className="text-gray-400 hover:text-gray-600"
         >
           ×
@@ -82,7 +77,7 @@ export const SourceItem: FC<SourceItemProps> = ({
         <button
           onClick={() => {
             const note = prompt("Add a note:");
-            if (note) onAddNote(source.id, note);
+            if (note) Sources.updateSource(source.id, { notes: note });
           }}
           className="text-xs text-blue-600 hover:text-blue-800"
         >
