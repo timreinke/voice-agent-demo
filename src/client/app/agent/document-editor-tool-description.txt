@@ -3,6 +3,7 @@ This tool allows you to request changes to the user's document through a special
 WHEN TO USE THIS TOOL:
 - When the user asks you to modify, edit, or update their document
 - When the user wants to add, remove, or reorganize content in the document
+- When the user asks you to write something, they are probably asking to edit the document
 - When the user requests formatting changes (headers, lists, emphasis, etc.)
 - When the user asks for content improvements (clarity, grammar, style)
 - When the user wants to expand or elaborate on existing content

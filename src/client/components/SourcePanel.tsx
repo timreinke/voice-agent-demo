@@ -7,46 +7,38 @@ import { generateId } from "../app/utils/id";
 
 export const SourcePanel: FC = () => {
   const { sources } = Sources.use();
-  const [urlInput, setUrlInput] = useState("");
-  const [snippetInput, setSnippetInput] = useState("");
-  const [activeTab, setActiveTab] = useState<"url" | "snippet">("url");
+  const [input, setInput] = useState("");
 
-  const handleAddURL = () => {
-    if (!urlInput.trim()) return;
-
-    const newSource: Source = {
-      id: generateId("source"),
-      type: "url",
-      createdAt: new Date(),
-      source: { type: "user", method: "type" },
-      content: {
-        type: "url",
-        url: urlInput.trim(),
-      } as URLContent,
-      metadata: {},
-    };
-
-    Sources.addSource(newSource);
-    setUrlInput("");
+  const isUrl = (text: string): boolean => {
+    try {
+      new URL(text);
+      return true;
+    } catch {
+      return false;
+    }
   };
 
-  const handleAddSnippet = () => {
-    if (!snippetInput.trim()) return;
+  const detectedType = input.trim() ? (isUrl(input.trim()) ? "url" : "snippet") : null;
 
+  const handleAdd = () => {
+    const trimmedInput = input.trim();
+    if (!trimmedInput) return;
+
+    const isUrlInput = isUrl(trimmedInput);
+    
     const newSource: Source = {
       id: generateId("source"),
-      type: "snippet",
+      type: isUrlInput ? "url" : "snippet",
       createdAt: new Date(),
       source: { type: "user", method: "type" },
-      content: {
-        type: "snippet",
-        text: snippetInput.trim(),
-      } as SnippetContent,
+      content: isUrlInput 
+        ? { type: "url", url: trimmedInput } as URLContent
+        : { type: "snippet", text: trimmedInput } as SnippetContent,
       metadata: {},
     };
 
     Sources.addSource(newSource);
-    setSnippetInput("");
+    setInput("");
   };
 
   const handleAddNote = (id: string, note: string) => {
@@ -60,66 +52,36 @@ export const SourcePanel: FC = () => {
       </div>
 
       <div className="px-6 pb-4">
-        <div className="flex space-x-2 mb-3">
+        <div className="space-y-2">
+          <div className="flex items-center space-x-2 text-xs text-gray-600 h-6">
+            {detectedType && (
+              <span className={`px-2 py-1 rounded-full ${
+                detectedType === "url" 
+                  ? "bg-green-100 text-green-700" 
+                  : "bg-blue-100 text-blue-700"
+              }`}>
+                {detectedType === "url" ? "🔗 URL detected" : "📝 Text detected"}
+              </span>
+            )}
+          </div>
+          <textarea
+            value={input}
+            onInput={(e) => setInput((e.target as HTMLTextAreaElement).value)}
+            onKeyDown={(e) => e.key === "Enter" && e.ctrlKey && handleAdd()}
+            placeholder="Paste a URL or enter text..."
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm h-20 resize-none"
+          />
           <button
-            onClick={() => setActiveTab("url")}
-            className={`px-3 py-1 text-sm rounded ${
-              activeTab === "url"
-                ? "bg-blue-100 text-blue-700"
-                : "bg-gray-100 text-gray-600"
-            }`}
+            onClick={handleAdd}
+            disabled={!input.trim()}
+            className="w-full px-3 py-2 bg-blue-600 text-white rounded-md text-sm disabled:bg-gray-300"
           >
-            Add URL
+            {detectedType === "url" ? "Add URL" : detectedType === "snippet" ? "Add Text" : "Add Source"}
           </button>
-          <button
-            onClick={() => setActiveTab("snippet")}
-            className={`px-3 py-1 text-sm rounded ${
-              activeTab === "snippet"
-                ? "bg-blue-100 text-blue-700"
-                : "bg-gray-100 text-gray-600"
-            }`}
-          >
-            Add Snippet
-          </button>
+          <p className="text-xs text-gray-500 text-center">
+            Tip: Ctrl+Enter to quickly add
+          </p>
         </div>
-
-        {activeTab === "url" ? (
-          <div className="space-y-2">
-            <input
-              type="url"
-              value={urlInput}
-              onInput={(e) => setUrlInput((e.target as HTMLInputElement).value)}
-              onKeyDown={(e) => e.key === "Enter" && handleAddURL()}
-              placeholder="Enter URL..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-            />
-            <button
-              onClick={handleAddURL}
-              disabled={!urlInput.trim()}
-              className="w-full px-3 py-2 bg-blue-600 text-white rounded-md text-sm disabled:bg-gray-300"
-            >
-              Add URL
-            </button>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            <textarea
-              value={snippetInput}
-              onInput={(e) =>
-                setSnippetInput((e.target as HTMLTextAreaElement).value)
-              }
-              placeholder="Enter text snippet..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm h-24 resize-none"
-            />
-            <button
-              onClick={handleAddSnippet}
-              disabled={!snippetInput.trim()}
-              className="w-full px-3 py-2 bg-blue-600 text-white rounded-md text-sm disabled:bg-gray-300"
-            >
-              Add Snippet
-            </button>
-          </div>
-        )}
       </div>
 
       <div className="flex-1 overflow-y-auto px-6 pb-6">
