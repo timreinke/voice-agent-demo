@@ -1,11 +1,15 @@
 import { FC } from "hono/jsx";
-import { Workspace } from "../app/workspace";
+import { Document } from "../app/document";
 export const DocumentPanel: FC = () => {
-  const { document } = Workspace.use();
+  const { document } = Document.use();
 
   const handleNew = () => {
-    if (confirm("Are you sure you want to create a new document? This will clear the current content.")) {
-      Workspace.setDocument(Workspace.getDefaultDocument());
+    if (
+      confirm(
+        "Are you sure you want to create a new document? This will clear the current content."
+      )
+    ) {
+      Document.setDocument(Document.getDefaultDocument());
     }
   };
 
@@ -16,9 +20,10 @@ export const DocumentPanel: FC = () => {
           <span className="text-blue-500 mr-2">📄</span>Document Canvas
         </h2>
         <div className="flex space-x-2">
-          <button 
+          <button
             onClick={handleNew}
-            className="px-4 py-1.5 text-sm bg-white hover:bg-blue-50 border border-gray-200 rounded-lg cursor-pointer transition-colors">
+            className="px-4 py-1.5 text-sm bg-white hover:bg-blue-50 border border-gray-200 rounded-lg cursor-pointer transition-colors"
+          >
             New
           </button>
           <button className="px-4 py-1.5 text-sm bg-white hover:bg-blue-50 border border-gray-200 rounded-lg cursor-pointer shadow-sm transition-colors">

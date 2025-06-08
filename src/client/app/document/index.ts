@@ -2,7 +2,7 @@ import { tool } from "@openai/agents";
 import { z } from "zod";
 import { Store } from "../utils/store";
 
-export namespace Workspace {
+export namespace Document {
   const defaultDocument = `
     <h1>Welcome to Document Canvas</h1>
     <p>This is your document workspace where you can create, edit, and collaborate on content.</p>

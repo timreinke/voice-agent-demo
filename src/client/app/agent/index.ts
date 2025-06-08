@@ -2,7 +2,7 @@ import { RealtimeAgent, RealtimeSession, tool } from "@openai/agents/realtime";
 
 import { Store } from "../utils/store";
 import { worker } from "../service/worker";
-import { Workspace } from "../workspace";
+import { Document } from "../document";
 import { z } from "zod";
 
 import documentEditorToolDescription from "./document-editor-tool-description.txt";
@@ -23,7 +23,7 @@ export namespace Agent {
       }),
       strict: true,
       execute: async ({ instructions }) => {
-        const document = Workspace.getDocument();
+        const document = Document.getDocument();
         const response = await worker.agents["document-editor"].$post({
           json: { document, instructions },
         });
@@ -37,7 +37,7 @@ export namespace Agent {
         }
 
         const { newDocument } = await response.json();
-        Workspace.setDocument(newDocument);
+        Document.setDocument(newDocument);
 
         return {
           success: true,
