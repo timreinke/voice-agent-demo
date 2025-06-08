@@ -36,12 +36,18 @@ export const SourceItem: FC<SourceItemProps> = ({ source }) => {
   };
 
   return (
-    <div className="p-3 border border-gray-200 rounded-lg space-y-2">
+    <div className="p-4 bg-white border border-gray-200 rounded-xl space-y-2 hover:shadow-md transition-shadow cursor-pointer">
       <div className="flex justify-between items-start">
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-medium px-2 py-1 bg-gray-100 rounded">
-              {source.type}
+            <span className={`text-xs font-medium px-2.5 py-1 rounded-lg ${
+              source.type === "url" 
+                ? "bg-emerald-100 text-emerald-700" 
+                : source.type === "snippet"
+                ? "bg-blue-100 text-blue-700"
+                : "bg-purple-100 text-purple-700"
+            }`}>
+              {source.type === "url" ? "🔗" : source.type === "snippet" ? "📝" : "🔍"} {source.type}
             </span>
             <span className="text-xs text-gray-500">
               {formatDate(source.createdAt)}
@@ -55,7 +61,7 @@ export const SourceItem: FC<SourceItemProps> = ({ source }) => {
         </div>
         <button
           onClick={() => Sources.removeSource(source.id)}
-          className="text-gray-400 hover:text-gray-600"
+          className="text-gray-400 hover:text-red-500 text-xl leading-none p-1 rounded-lg hover:bg-red-50 transition-colors"
         >
           ×
         </button>
@@ -70,8 +76,8 @@ export const SourceItem: FC<SourceItemProps> = ({ source }) => {
       <div className="text-xs text-gray-500">{getSourceLabel()}</div>
 
       {source.notes ? (
-        <div className="text-sm bg-yellow-50 p-2 rounded">
-          <span className="font-medium">Note:</span> {source.notes}
+        <div className="text-sm bg-gradient-to-r from-yellow-50 to-amber-50 p-3 rounded-lg border border-yellow-200">
+          <span className="font-medium text-amber-700">💡 Note:</span> {source.notes}
         </div>
       ) : (
         <button
@@ -79,7 +85,7 @@ export const SourceItem: FC<SourceItemProps> = ({ source }) => {
             const note = prompt("Add a note:");
             if (note) Sources.updateSource(source.id, { notes: note });
           }}
-          className="text-xs text-blue-600 hover:text-blue-800"
+          className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
         >
           Add note
         </button>

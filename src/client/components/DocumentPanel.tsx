@@ -10,16 +10,18 @@ export const DocumentPanel: FC = () => {
   };
 
   return (
-    <div className="h-full bg-gray-50 p-6 flex flex-col">
+    <div className="h-full bg-transparent p-6 flex flex-col">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-gray-900">Document Canvas</h2>
+        <h2 className="text-lg font-semibold text-gray-900">
+          <span className="text-blue-500 mr-2">📄</span>Document Canvas
+        </h2>
         <div className="flex space-x-2">
           <button 
             onClick={handleNew}
-            className="px-3 py-1 text-sm bg-white hover:bg-gray-50 border border-gray-300 rounded cursor-pointer">
+            className="px-4 py-1.5 text-sm bg-white hover:bg-blue-50 border border-gray-200 rounded-lg cursor-pointer transition-colors">
             New
           </button>
-          <button className="px-3 py-1 text-sm bg-white hover:bg-gray-50 border border-gray-300 rounded cursor-pointer">
+          <button className="px-4 py-1.5 text-sm bg-white hover:bg-blue-50 border border-gray-200 rounded-lg cursor-pointer shadow-sm transition-colors">
             Save
           </button>
         </div>
