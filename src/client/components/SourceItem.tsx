@@ -32,7 +32,36 @@ export const SourceItem: FC<SourceItemProps> = ({ source }) => {
         );
       case "search_result":
         return source.content.snippet;
+      case "research":
+        if (source.status === "pending") {
+          return "Research in progress...";
+        } else if (source.status === "error") {
+          return `Research failed: ${source.error || "Unknown error"}`;
+        } else if (source.content.findings) {
+          return source.content.findings.summary.substring(0, 150) + 
+                 (source.content.findings.summary.length > 150 ? "..." : "");
+        }
+        return source.content.query;
     }
+  };
+
+  const getStatusIndicator = () => {
+    if (source.status === "pending") {
+      return (
+        <span 
+          className="inline-block w-2 h-2 bg-yellow-400 rounded-full animate-pulse" 
+          title="Research in progress"
+        />
+      );
+    } else if (source.status === "error") {
+      return (
+        <span 
+          className="inline-block w-2 h-2 bg-red-500 rounded-full" 
+          title={source.error || "Error occurred"}
+        />
+      );
+    }
+    return null;
   };
 
   return (
@@ -45,10 +74,15 @@ export const SourceItem: FC<SourceItemProps> = ({ source }) => {
                 ? "bg-emerald-100 text-emerald-700" 
                 : source.type === "snippet"
                 ? "bg-blue-100 text-blue-700"
-                : "bg-purple-100 text-purple-700"
+                : source.type === "research"
+                ? "bg-purple-100 text-purple-700"
+                : "bg-gray-100 text-gray-700"
             }`}>
-              {source.type === "url" ? "🔗" : source.type === "snippet" ? "📝" : "🔍"} {source.type}
+              {source.type === "url" ? "🔗" : 
+               source.type === "snippet" ? "📝" : 
+               source.type === "research" ? "🔍" : "📋"} {source.type}
             </span>
+            {getStatusIndicator()}
             <span className="text-xs text-gray-500">
               {formatDate(source.createdAt)}
             </span>

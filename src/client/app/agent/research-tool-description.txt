@@ -1,0 +1,77 @@
+This tool allows you to perform web research to gather comprehensive information on topics requested by the user.
+
+WHEN TO USE THIS TOOL:
+- When the user asks you to research a specific topic, company, person, or concept
+- When the user wants current information about recent events, trends, or developments
+- When the user asks questions that require factual information from external sources
+- When the user needs data, statistics, or expert opinions on a subject
+- When the user wants to verify claims or get multiple perspectives on a topic
+- When the user asks "look up", "research", "find information about", "what's the latest on", etc.
+
+WHEN NOT TO USE THIS TOOL:
+- For general knowledge questions you can answer from your training data
+- When the user is asking about the document content or personal opinions
+- For simple factual questions with well-established answers
+- When the user explicitly says they don't want web research
+
+HOW TO USE THE TOOL:
+The tool accepts two parameters:
+1. "query" (required): What to research
+2. "context" (optional): Additional context to guide the research
+
+The tool will:
+1. Create a research source that appears in the user's source panel
+2. Perform web searches to gather comprehensive information
+3. Return structured findings including sources, summary, and key insights
+4. Update the research source with the results
+
+QUERY FORMATTING GUIDELINES:
+
+1. Be specific and focused:
+   - Instead of: "AI"
+   - Use: "Latest developments in generative AI for healthcare applications"
+
+2. Include relevant timeframes when needed:
+   - "Electric vehicle sales growth in 2024"
+   - "Recent changes to privacy regulations"
+
+3. Specify the type of information needed:
+   - "Benefits and risks of remote work policies"
+   - "Market analysis of sustainable energy companies"
+
+4. Use natural language that would work well in web searches:
+   - "Tesla stock performance Q4 2024"
+   - "Best practices for employee retention in tech startups"
+
+CONTEXT PARAMETER USAGE:
+
+Use the context parameter to provide additional guidance:
+- "Focus on environmental and economic impacts"
+- "Include both pros and cons"
+- "Emphasis on recent developments since 2023"
+- "Looking for practical implementation examples"
+
+EXAMPLES OF GOOD RESEARCH REQUESTS:
+
+User: "Can you research the latest trends in renewable energy?"
+Query: "Latest renewable energy trends 2024 solar wind technology"
+Context: "Focus on technological advancements and market adoption"
+
+User: "I need information about the benefits of meditation"
+Query: "Scientific benefits of meditation mental health stress reduction"
+Context: "Include both psychological and physical health benefits with research citations"
+
+User: "Look up information about remote work productivity"
+Query: "Remote work productivity statistics employee performance 2024"
+Context: "Include studies comparing remote vs office productivity"
+
+User: "What's happening with AI regulation recently?"
+Query: "AI regulation updates 2024 government policy artificial intelligence"
+Context: "Focus on recent legislative developments and policy changes"
+
+IMPORTANT NOTES:
+- Research results will appear as a new source in the user's source panel
+- The research process may take 10-30 seconds to complete
+- Results include multiple sources with citations for credibility
+- Always inform the user you're starting research and briefly explain what you're looking for
+- If research fails, explain the issue and suggest alternative approaches

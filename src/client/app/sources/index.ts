@@ -44,7 +44,7 @@ export namespace Sources {
   }
 }
 
-export type SourceType = "url" | "snippet" | "search_result";
+export type SourceType = "url" | "snippet" | "search_result" | "research";
 
 export type SourceSource =
   | { type: "user"; method: "voice" | "paste" | "type" }
@@ -59,9 +59,11 @@ export interface Source {
   content: SourceContent;
   metadata: SourceMetadata;
   notes?: string;
+  status: 'pending' | 'ready' | 'error';
+  error?: string;
 }
 
-export type SourceContent = URLContent | SnippetContent | SearchResultContent;
+export type SourceContent = URLContent | SnippetContent | SearchResultContent | ResearchContent;
 
 export interface URLContent {
   type: "url";
@@ -79,6 +81,21 @@ export interface SearchResultContent {
   query: string;
   url: string;
   snippet: string;
+}
+
+export interface ResearchContent {
+  type: "research";
+  query: string;
+  findings?: {
+    summary: string;
+    sources: Array<{
+      title: string;
+      url: string;
+      snippet: string;
+      relevance: string;
+    }>;
+    keyInsights: string[];
+  };
 }
 
 export interface SourceMetadata {

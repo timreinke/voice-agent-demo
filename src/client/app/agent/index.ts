@@ -4,8 +4,11 @@ import { Store } from "../utils/store";
 import { worker } from "../service/worker";
 import { Document } from "../document";
 import { z } from "zod";
+import { Sources } from "../sources";
+import { generateId } from "../utils/id";
 
 import documentEditorToolDescription from "./document-editor-tool-description.txt";
+import researchToolDescription from "./research-tool-description.txt";
 
 export namespace Agent {
   const state = Store.create<{
@@ -43,6 +46,78 @@ export namespace Agent {
           success: true,
           newDocument,
         };
+      },
+    }),
+    tool({
+      name: "queue_research",
+      description: researchToolDescription,
+      parameters: z.object({
+        query: z.string().describe("What to research"),
+      }),
+      strict: true,
+      execute: async ({ query }) => {
+        // Create pending research source
+        const source = {
+          id: generateId("research"),
+          type: "research" as const,
+          status: "pending" as const,
+          createdAt: new Date(),
+          source: { type: "research" as const, query },
+          content: { type: "research" as const, query },
+          metadata: { title: `Research: ${query}` },
+        };
+        
+        Sources.addSource(source);
+        
+        try {
+          // Make research API call
+          const response = await worker.api.research.$post({
+            json: { query },
+          });
+          
+          if (!response.ok) {
+            throw new Error("Research request failed");
+          }
+          
+          const data = await response.json();
+          if (!data.success) {
+            throw new Error(data.error || "Research failed");
+          }
+          
+          // Update source with results
+          Sources.updateSource(source.id, {
+            status: "ready",
+            content: {
+              type: "research",
+              query,
+              findings: data.findings,
+            },
+            metadata: {
+              title: data.title || `Research: ${query}`,
+              summary: data.summary,
+            },
+          });
+          
+          return {
+            taskId: source.id,
+            status: "completed",
+            summary: data.summary,
+            sourcesFound: data.findings.sources.length,
+          };
+          
+        } catch (error) {
+          // Update source with error
+          Sources.updateSource(source.id, {
+            status: "error",
+            error: error instanceof Error ? error.message : "Research failed",
+          });
+          
+          return {
+            taskId: source.id,
+            status: "failed",
+            error: error instanceof Error ? error.message : "Research failed",
+          };
+        }
       },
     }),
   ];

@@ -27,7 +27,6 @@ export namespace Document {
 
   const state = Store.create({
     document: defaultDocument,
-    inputs: [],
   });
 
   export function use() {

@@ -66,6 +66,7 @@ const SourceInput: FC = () => {
         ? { type: "url", url: trimmedInput } as URLContent
         : { type: "snippet", text: trimmedInput } as SnippetContent,
       metadata: {},
+      status: 'ready',
     };
 
     Sources.addSource(newSource);
