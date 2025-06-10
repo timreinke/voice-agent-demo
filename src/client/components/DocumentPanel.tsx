@@ -9,7 +9,7 @@ export const DocumentPanel: FC = () => {
         "Are you sure you want to create a new document? This will clear the current content."
       )
     ) {
-      Document.setDocument(Document.getDefaultDocument());
+      Document.setDocument("");
     }
   };
 
@@ -34,7 +34,11 @@ export const DocumentPanel: FC = () => {
 
       <div className="flex-1 bg-white border border-gray-200 rounded-lg shadow-sm overflow-auto">
         <div className="document-content p-8 max-w-4xl mx-auto">
-          <div dangerouslySetInnerHTML={{ __html: document }} />
+          {document.trim() === "" ? (
+            <div className="text-gray-400" dangerouslySetInnerHTML={{ __html: Document.getDefaultDocument() }} />
+          ) : (
+            <div dangerouslySetInnerHTML={{ __html: document }} />
+          )}
         </div>
       </div>
     </div>
