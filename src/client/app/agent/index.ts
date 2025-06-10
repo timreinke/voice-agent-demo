@@ -4,7 +4,7 @@ import { Store } from "../utils/store";
 import { worker } from "../service/worker";
 import { Document } from "../document";
 import { z } from "zod";
-import { Sources } from "../sources";
+import { Sources, FileContent } from "../sources";
 import { generateId } from "../utils/id";
 
 import documentEditorToolDescription from "./document-editor-tool-description.txt";
@@ -46,14 +46,14 @@ export namespace Agent {
         
         // Include relevant file summaries in the instructions
         const fileSources = Sources.getSources().filter(
-          (source) => source.type === "file" && source.status === "ready" && source.content.summary
+          (source) => source.type === "file" && source.status === "ready" && source.content.type === "file" && source.content.summary
         );
         
         let enhancedInstructions = instructions;
         if (fileSources.length > 0) {
           const fileContext = fileSources.map((source) => {
-            const fileContent = source.content as any; // Type assertion since we know it's file content
-            return `File "${fileContent.filename}": ${fileContent.summary.summary}`;
+            const fileContent = source.content as FileContent; // Type assertion is safe due to filter
+            return `File "${fileContent.filename}": ${fileContent.summary?.summary}`;
           }).join('\n');
           
           enhancedInstructions = `${instructions}
@@ -62,7 +62,7 @@ Available file context that may be relevant:
 ${fileContext}`;
         }
 
-        const response = await worker.agents["document-editor"].$post({
+        const response = await worker.api.agents["document-editor"].$post({
           json: { document, instructions: enhancedInstructions, currentSelection: currentSelection || undefined },
         });
 
@@ -107,7 +107,7 @@ ${fileContext}`;
         
         try {
           // Make research API call
-          const response = await worker.api.research.$post({
+          const response = await worker.api.agents.research.$post({
             json: { query },
           });
           
@@ -138,7 +138,7 @@ ${fileContext}`;
             taskId: source.id,
             status: "completed",
             summary: data.summary,
-            sourcesFound: data.findings.sources.length,
+            sourcesFound: data.findings?.sources.length || 0,
           };
           
         } catch (error) {
@@ -196,7 +196,7 @@ ${fileContext}`;
       }
     );
     webRTC.on("input_audio_buffer.committed", () => {
-      session.sendMessage("current selection: " + Document.getSelection());
+      // session.sendMessage("current selection: " + Document.getSelection());
     });
     webRTC.on("*", (event) => {
       console.log("webRTC", event);

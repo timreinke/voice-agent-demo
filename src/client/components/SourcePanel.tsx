@@ -73,7 +73,7 @@ const FileUpload: FC = () => {
     try {
       const base64Data = await fileToBase64(file);
       
-      const response = await worker.api.file.summarize.$post({
+      const response = await worker.api.agents["file-summarizer"].$post({
         json: {
           filename: file.name,
           mimeType: file.type,
@@ -87,7 +87,7 @@ const FileUpload: FC = () => {
 
       const result = await response.json();
 
-      if (result.success) {
+      if (result.success && result.summary) {
         // Update source with summary
         Sources.updateSource(fileSource.id, {
           content: {
