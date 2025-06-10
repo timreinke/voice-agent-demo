@@ -51,42 +51,42 @@ EXAMPLES OF GOOD INSTRUCTIONS:
 
 <example>
 <user>Can you make the introduction more engaging?</user>
-<edit-request>
+<instructions>
 context: 
 user request: Can you make the introduction more engaging?
-</edit-request>
+</instructions>
 </example>
 
 <example>
 <user>Add a section about best practices</user>
-<edit-request>
+<instructions>
 context: 
 user request: Add a section about best practices
-</edit-request>
+</instructions>
 </example>
 
 <example>
 <user>The document is too wordy</user>
-<edit-request>
+<instructions>
 context: 
 user request: The document is too wordy
-</edit-request>
+</instructions>
 </example>
 
 <example>
 <user>Fix the grammar and make it flow better</user>
-<edit-request>
+<instructions>
 context: 
 user request: Fix the grammar and make it flow better
-</edit-request>
+</instructions>
 </example>
 
 <example>
 <user>Can you reorganize this to be clearer?</user>
-<edit-request>
+<instructions>
 context: User previously asked to add more technical details to the document
 user request: Can you reorganize this to be clearer?
-</edit-request>
+</instructions>
 </example>
 
 IMPORTANT NOTES:

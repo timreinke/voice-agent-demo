@@ -1,4 +1,4 @@
-import { RealtimeAgent, RealtimeSession, tool } from "@openai/agents/realtime";
+import { OpenAIRealtimeWebRTC, RealtimeAgent, RealtimeSession, tool } from "@openai/agents/realtime";
 
 import { Store } from "../utils/store";
 import { worker } from "../service/worker";
@@ -9,6 +9,7 @@ import { generateId } from "../utils/id";
 
 import documentEditorToolDescription from "./document-editor-tool-description.txt";
 import researchToolDescription from "./research-tool-description.txt";
+import agentInstructions from "./agent.txt";
 
 export namespace Agent {
   const state = Store.create<{
@@ -24,6 +25,7 @@ export namespace Agent {
       parameters: z.object({}),
       strict: true,
       execute: async () => {
+        console.log("get-selection");
         const currentSelection = Document.getSelection();
         return {
           selection: currentSelection,
@@ -38,6 +40,7 @@ export namespace Agent {
       }),
       strict: true,
       execute: async ({ instructions }) => {
+        console.log("document-editor", instructions);
         const document = Document.getDocument();
         const currentSelection = Document.getSelection();
         
@@ -88,6 +91,7 @@ ${fileContext}`;
       }),
       strict: true,
       execute: async ({ query }) => {
+        console.log("queue_research", query);
         // Create pending research source
         const source = {
           id: generateId("research"),
@@ -179,16 +183,29 @@ ${fileContext}`;
     const { token } = await tokenResponse.json();
 
     const agent = new RealtimeAgent({
-      name: "Assistant",
-      instructions: "You are a helpful assistant.",
+      name: "Document Assistant",
+      instructions: agentInstructions,
       tools: TOOLS,
     });
 
-    const session = new RealtimeSession(agent);
+    
+    const webRTC = new OpenAIRealtimeWebRTC();
+    const session = new RealtimeSession(agent,
+      { 
+        transport: webRTC,
+      }
+    );
+    webRTC.on("input_audio_buffer.committed", () => {
+      session.sendMessage("current selection: " + Document.getSelection());
+    });
+    webRTC.on("*", (event) => {
+      console.log("webRTC", event);
+    });
 
     await session.connect({
       apiKey: token,
     });
+
 
     state.set({
       session,
