@@ -76,11 +76,20 @@ NEVER use:
 - Be conservative with structural changes unless requested
 - Ensure all edits result in valid, well-formed HTML
 
+## Current Selection Context
+
+When a "Current Selection" is provided, this represents text the user has highlighted or selected in the document. This selection often indicates the user's intent:
+
+- Commands like "translate this to..." or "reword this..." typically refer to the current selection
+- "Fix this paragraph" or "make this clearer" usually means the selected text
+- If no selection is provided but instructions seem to reference specific content, apply changes to the most relevant part of the document
+- When in doubt about scope, prioritize changes to the selected text first, then consider broader document improvements
+
 ## Response Format
 
 Reply only with the document HTML. Use idiomatic formatting of the HTML - indentation, etc.
 
-Do not quote your HTML in markdown code blocks.
+Markdown is forbidden. You must only respond with HTML.
 
 <example>
 <input>
@@ -109,3 +118,4 @@ Turn the first line into a heading
 </p>
 <p>Some more text</p>
 </output>
+</example>

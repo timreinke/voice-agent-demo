@@ -18,7 +18,8 @@ const tokenRequestSchema = z.object({
 
 const documentEditorRequestSchema = z.object({
   document: z.string(),
-  instructions: z.string()
+  instructions: z.string(),
+  currentSelection: z.string().optional()
 })
 
 const researchRequestSchema = z.object({
@@ -132,20 +133,31 @@ const routes = app
     zValidator('json', documentEditorRequestSchema),
     async (c) => {
       try {
-        const { document, instructions } = c.req.valid('json')
+        const { document, instructions, currentSelection } = c.req.valid('json')
         
         // Format the initial message with the document and instructions
         const initialMessage = `Document to edit:
 ${document}
 
 Instructions:
-${instructions}`
+${instructions}${currentSelection ? `
+
+Current Selection:
+${currentSelection}` : ''}`
         
         // Run the agent
-        const result = await run(documentEditorAgent(), initialMessage)
+        const result = await run(documentEditorAgent(), initialMessage);
+
+        let sanitizedOutput = result.finalOutput || "";
+        if (sanitizedOutput.startsWith("```html\n")) {
+          sanitizedOutput = sanitizedOutput.substring(7);
+        }
+        if (sanitizedOutput.endsWith("\n```")) {
+          sanitizedOutput = sanitizedOutput.substring(0, sanitizedOutput.length - 4);
+        }
         
         return c.json({ 
-          newDocument: result.finalOutput || "",
+          newDocument: sanitizedOutput,
         }, 200)
       } catch (error) {
         console.error('Error running document editor agent:', error)

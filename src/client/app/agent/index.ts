@@ -19,6 +19,18 @@ export namespace Agent {
 
   const TOOLS = [
     tool({
+      name: "get-selection",
+      description: "Get the source snippet that the user has selected. Use this to construct a better document-editor instruction.",
+      parameters: z.object({}),
+      strict: true,
+      execute: async () => {
+        const currentSelection = Document.getSelection();
+        return {
+          selection: currentSelection,
+        };
+      },
+    }),
+    tool({
       name: "document-editor",
       description: documentEditorToolDescription,
       parameters: z.object({
@@ -27,6 +39,7 @@ export namespace Agent {
       strict: true,
       execute: async ({ instructions }) => {
         const document = Document.getDocument();
+        const currentSelection = Document.getSelection();
         
         // Include relevant file summaries in the instructions
         const fileSources = Sources.getSources().filter(
@@ -45,9 +58,9 @@ export namespace Agent {
 Available file context that may be relevant:
 ${fileContext}`;
         }
-        
+
         const response = await worker.agents["document-editor"].$post({
-          json: { document, instructions: enhancedInstructions },
+          json: { document, instructions: enhancedInstructions, currentSelection: currentSelection || undefined },
         });
 
         if (response.status !== 200) {

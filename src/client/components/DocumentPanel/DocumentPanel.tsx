@@ -17,6 +17,7 @@ export const DocumentPanel: FC = () => {
   };
 
   useEffect(() => {
+    if (!document) return;
     const htmlToRender = document.trim() === "" ? Document.getDefaultDocument() : document;
     console.log("htmlToRender", htmlToRender);
     renderHTML(htmlToRender);
@@ -47,7 +48,7 @@ export const DocumentPanel: FC = () => {
           data-document-container="true"
           className="document-content p-8 max-w-4xl mx-auto"
         >
-          {/* Content will be rendered by useSelectionTracking */}
+          {document ? undefined : <div className="text-gray-400" dangerouslySetInnerHTML={{ __html: Document.getDefaultDocument() }} />}
         </div>
       </div>
     </div>

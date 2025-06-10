@@ -52,6 +52,10 @@ export namespace Document {
     });
   }
 
+  export function getSelection() {
+    return state.get().currentSelection;
+  }
+
   export function getDefaultDocument() {
     return defaultDocument;
   }
