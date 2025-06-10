@@ -1,5 +1,3 @@
-Before calling this tool, you must call the get-selection tool.
-
 This tool allows you to request changes to the user's document through a specialized document-editing agent.
 
 WHEN TO USE THIS TOOL:
@@ -19,10 +17,12 @@ WHEN NOT TO USE THIS TOOL:
 HOW TO USE THE TOOL:
 The tool accepts a single parameter: "instructions"
 
-The instructions should be a clear, concise summary that includes:
-1. The specific change requested by the user
-2. Any relevant context from the conversation
-3. Any constraints or preferences mentioned by the user
+The instructions should include:
+1. Recent conversation context, summarized to the appropriate level of detail. The summary should only include information that is likely to relate to the user's query. Often user edit requests are independent of previous edits, so it is ok for the context to be empty.
+2. The user's message verbatim
+3. Any specific constraints or preferences mentioned by the user
+
+The user's current selection is automatically provided to the document editor tool, so you don't need to worry about selection context.
 
 INSTRUCTION FORMATTING GUIDELINES:
 
@@ -49,26 +49,52 @@ INSTRUCTION FORMATTING GUIDELINES:
 
 EXAMPLES OF GOOD INSTRUCTIONS:
 
-User: "Can you make the introduction more engaging?"
-Instructions: "Rewrite the introduction to be more engaging by adding a compelling hook, using active voice, and creating a clearer connection to the reader's interests"
+<example>
+<user>Can you make the introduction more engaging?</user>
+<edit-request>
+context: 
+user request: Can you make the introduction more engaging?
+</edit-request>
+</example>
 
-User: "Add a section about best practices"
-Instructions: "Add a new section titled 'Best Practices' after the current content, including 5-7 actionable recommendations with brief explanations for each"
+<example>
+<user>Add a section about best practices</user>
+<edit-request>
+context: 
+user request: Add a section about best practices
+</edit-request>
+</example>
 
-User: "The document is too wordy"
-Instructions: "Reduce wordiness throughout the document by eliminating redundant phrases, combining related sentences, and using more concise language while preserving all key information"
+<example>
+<user>The document is too wordy</user>
+<edit-request>
+context: 
+user request: The document is too wordy
+</edit-request>
+</example>
 
-User: "Fix the grammar and make it flow better"
-Instructions: "Correct the selection grammar errors and improve flow by adding transition phrases between paragraphs, varying sentence structure, and ensuring logical progression of ideas"
+<example>
+<user>Fix the grammar and make it flow better</user>
+<edit-request>
+context: 
+user request: Fix the grammar and make it flow better
+</edit-request>
+</example>
 
-User: "Can you reorganize this to be clearer?"
-Instructions: "Reorganize the selection for better clarity by grouping related topics together, adding clear section headers, and ensuring each section flows logically to the next"
+<example>
+<user>Can you reorganize this to be clearer?</user>
+<edit-request>
+context: User previously asked to add more technical details to the document
+user request: Can you reorganize this to be clearer?
+</edit-request>
+</example>
 
 IMPORTANT NOTES:
-- The document-editor agent will receive the current document content automatically
-- You don't need to include the document content in your instructions
+- The document-editor agent will receive the current document content and user selection automatically
+- You don't need to include the document content or selection details in your instructions
+- Always include the user's message verbatim to give the document editor full context
+- Include relevant conversation context only if it directly relates to the current request
 - Focus on clearly communicating WHAT needs to be changed and HOW
 - If the user's request is vague, infer reasonable improvements based on common document editing practices
 - Always maintain the document's core message and purpose unless explicitly asked to change it
 - Before running this tool, tell the user you will be running it. It can take some time, and you should let them know
-- The user's selection is automatically provided, so if it sounds like they're asking to edit a specific part of the document, just call this tool
