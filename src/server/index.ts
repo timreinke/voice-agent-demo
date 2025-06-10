@@ -1,9 +1,10 @@
 import { Hono } from 'hono'
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
-import { run, setDefaultOpenAIKey } from '@openai/agents'
+import { run, setDefaultOpenAIKey, AgentInputItem } from '@openai/agents'
 import { documentEditorAgent } from './agents/document-editor'
 import { researchAgent } from './agents/research'
+import { fileSummarizerAgent } from './agents/file-summarizer'
 
 type Bindings = {
   OPENAI_API_KEY: string
@@ -25,6 +26,12 @@ const researchRequestSchema = z.object({
   context: z.string().optional()
 })
 
+const fileSummarizerRequestSchema = z.object({
+  filename: z.string(),
+  mimeType: z.string(),
+  base64Data: z.string()
+})
+
 interface OpenAISessionResponse {
   client_secret: {
     value: string
@@ -44,6 +51,14 @@ interface ResearchFindings {
     }>
     keyInsights: string[]
   }
+}
+
+interface FileSummary {
+  title: string
+  summary: string
+  keyPoints: string[]
+  contentType: string
+  suggestedActions: string[]
 }
 
 function parseResearchFindings(agentOutput: string): ResearchFindings {
@@ -75,6 +90,34 @@ function parseResearchFindings(agentOutput: string): ResearchFindings {
         sources: [],
         keyInsights: ['Research completed but results could not be parsed properly']
       }
+    };
+  }
+}
+
+function parseFileSummary(agentOutput: string): FileSummary {
+  try {
+    const jsonMatch = agentOutput.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('No JSON found in agent output');
+    }
+    
+    const parsed = JSON.parse(jsonMatch[0]);
+    
+    if (!parsed.title || !parsed.summary || !parsed.keyPoints) {
+      throw new Error('Invalid file summary structure');
+    }
+    
+    return parsed as FileSummary;
+  } catch (error) {
+    console.error('Failed to parse file summary:', error);
+    console.error('Agent output:', agentOutput);
+    
+    return {
+      title: 'File Analysis',
+      summary: 'Unable to parse file summary properly.',
+      keyPoints: ['File uploaded successfully but analysis failed'],
+      contentType: 'Unknown',
+      suggestedActions: ['Review file content manually']
     };
   }
 }
@@ -147,6 +190,57 @@ Provide:
         return c.json({
           success: false,
           error: error instanceof Error ? error.message : 'Research failed'
+        }, 500);
+      }
+    }
+  )
+  .post(
+    '/api/file/summarize',
+    zValidator('json', fileSummarizerRequestSchema),
+    async (c) => {
+      try {
+        const { filename, mimeType, base64Data } = c.req.valid('json');
+        
+        // Create data URL
+        const dataUrl = `data:${mimeType};base64,${base64Data}`;
+        
+        // Create input for agent (following test-file-upload.ts format)
+        const input: AgentInputItem[] = [
+          {
+            type: "message",
+            role: "user",
+            content: [
+              {
+                type: "input_file",
+                file: dataUrl,
+                providerData: {
+                  filename: filename,
+                }
+              },
+              {
+                type: "input_text",
+                text: "Please analyze this file and provide a structured summary as specified in your instructions."
+              }
+            ]
+          }
+        ];
+        
+        // Run the file summarizer agent
+        const result = await run(fileSummarizerAgent(), input);
+        
+        // Parse the summary
+        const summary = parseFileSummary(result.finalOutput || "");
+        
+        return c.json({
+          success: true,
+          summary
+        });
+        
+      } catch (error) {
+        console.error('Error running file summarizer agent:', error);
+        return c.json({
+          success: false,
+          error: error instanceof Error ? error.message : 'File summarization failed'
         }, 500);
       }
     }

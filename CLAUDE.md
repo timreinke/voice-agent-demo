@@ -36,3 +36,12 @@ This is a full-stack Cloudflare Workers application using Hono framework with JS
 - Wrangler config specifies no_bundle=true, relying on esbuild for bundling
 - Static assets are served from dist/static/ directory
 - Worker entry point is dist/worker.js
+
+### API Calls
+- **ALWAYS** use the `worker` client from `src/client/app/service/worker.ts` for backend API calls
+- **NEVER** use `fetch()` directly - use the typed Hono client instead
+- Examples:
+  - `worker.api.research.$post({ json: { query } })`
+  - `worker.agents["document-editor"].$post({ json: { document, instructions } })`
+  - `worker.api.openai.token.$post({ json: {} })`
+  - `worker.api.file.summarize.$post({ json: { filename, mimeType, base64Data } })`

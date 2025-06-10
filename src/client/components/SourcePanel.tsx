@@ -1,9 +1,11 @@
 import { FC } from "hono/jsx";
-import { useState } from "hono/jsx";
+import { useState, useRef } from "hono/jsx";
 import { Sources } from "../app/sources";
-import type { Source, URLContent, SnippetContent } from "../app/sources";
+import type { Source, URLContent, SnippetContent, FileContent } from "../app/sources";
 import { SourceItem } from "./SourceItem";
 import { generateId } from "../app/utils/id";
+import { Agent } from "../app/agent";
+import { worker } from "../app/service/worker";
 
 export const SourcePanel: FC = () => {
   const { sources } = Sources.use();
@@ -16,8 +18,9 @@ export const SourcePanel: FC = () => {
         </h2>
       </div>
 
-      <div className="px-6 pb-4">
+      <div className="px-6 pb-4 space-y-3">
         <SourceInput />
+        <FileUpload />
       </div>
 
       <div className="flex-1 overflow-y-auto px-6 pb-6">
@@ -33,6 +36,121 @@ export const SourcePanel: FC = () => {
           )}
         </div>
       </div>
+    </div>
+  );
+};
+
+const FileUpload: FC = () => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileSelect = async (event: Event) => {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    // Create pending source immediately
+    const fileSource: Source = {
+      id: generateId("source"),
+      type: "file",
+      createdAt: new Date(),
+      source: { type: "user", method: "file" },
+      content: {
+        type: "file",
+        filename: file.name,
+        mimeType: file.type,
+        size: file.size,
+      } as FileContent,
+      metadata: {
+        title: file.name,
+        summary: "Processing file..."
+      },
+      status: 'pending',
+    };
+
+    Sources.addSource(fileSource);
+
+    // Convert file to base64 and send to backend
+    try {
+      const base64Data = await fileToBase64(file);
+      
+      const response = await worker.api.file.summarize.$post({
+        json: {
+          filename: file.name,
+          mimeType: file.type,
+          base64Data: base64Data.split(',')[1], // Remove data URL prefix
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to summarize file');
+      }
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Update source with summary
+        Sources.updateSource(fileSource.id, {
+          content: {
+            ...fileSource.content,
+            summary: result.summary,
+          } as FileContent,
+          metadata: {
+            title: result.summary.title,
+            summary: result.summary.summary,
+          },
+          status: 'ready',
+        });
+
+        // Send file summary to RealtimeAgent conversation
+        const message = `File '${file.name}' has been uploaded and analyzed. Summary: ${result.summary.summary}. The file contains ${result.summary.contentType.toLowerCase()} content. Key points: ${result.summary.keyPoints.join(', ')}. What would you like to do with this file?`;
+        Agent.sendMessage(message);
+      } else {
+        Sources.updateSource(fileSource.id, {
+          status: 'error',
+          error: result.error || 'Failed to summarize file',
+        });
+      }
+    } catch (error) {
+      Sources.updateSource(fileSource.id, {
+        status: 'error',
+        error: error instanceof Error ? error.message : 'Failed to process file',
+      });
+    }
+
+    // Clear the input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
+  };
+
+  return (
+    <div>
+      <input
+        ref={fileInputRef}
+        type="file"
+        onChange={handleFileSelect}
+        className="hidden"
+        id="file-input"
+      />
+      <label
+        htmlFor="file-input"
+        className="w-full px-3 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg text-sm font-medium hover:from-purple-600 hover:to-pink-600 transition-all shadow-sm cursor-pointer flex items-center justify-center space-x-2"
+      >
+        <span>📎</span>
+        <span>Upload File</span>
+      </label>
+      <p className="text-xs text-gray-500 text-center mt-1">
+        Upload documents, images, or other files for analysis
+      </p>
     </div>
   );
 };

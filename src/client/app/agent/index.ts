@@ -27,8 +27,27 @@ export namespace Agent {
       strict: true,
       execute: async ({ instructions }) => {
         const document = Document.getDocument();
+        
+        // Include relevant file summaries in the instructions
+        const fileSources = Sources.getSources().filter(
+          (source) => source.type === "file" && source.status === "ready" && source.content.summary
+        );
+        
+        let enhancedInstructions = instructions;
+        if (fileSources.length > 0) {
+          const fileContext = fileSources.map((source) => {
+            const fileContent = source.content as any; // Type assertion since we know it's file content
+            return `File "${fileContent.filename}": ${fileContent.summary.summary}`;
+          }).join('\n');
+          
+          enhancedInstructions = `${instructions}
+
+Available file context that may be relevant:
+${fileContext}`;
+        }
+        
         const response = await worker.agents["document-editor"].$post({
-          json: { document, instructions },
+          json: { document, instructions: enhancedInstructions },
         });
 
         if (response.status !== 200) {
@@ -175,5 +194,15 @@ export namespace Agent {
     state.set({
       session: null,
     });
+  }
+
+  export function sendMessage(message: string) {
+    const s = state.get();
+    if (!s.session) {
+      console.warn("Cannot send message: not connected to session");
+      return;
+    }
+
+    s.session.sendMessage(message);
   }
 }

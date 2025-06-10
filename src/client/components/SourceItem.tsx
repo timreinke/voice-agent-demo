@@ -42,7 +42,24 @@ export const SourceItem: FC<SourceItemProps> = ({ source }) => {
                  (source.content.findings.summary.length > 150 ? "..." : "");
         }
         return source.content.query;
+      case "file":
+        if (source.status === "pending") {
+          return "Analyzing file...";
+        } else if (source.status === "error") {
+          return `File analysis failed: ${source.error || "Unknown error"}`;
+        } else if (source.content.summary) {
+          return source.content.summary.summary;
+        }
+        return `${source.content.filename} (${formatFileSize(source.content.size)})`;
     }
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
   };
 
   const getStatusIndicator = () => {
@@ -76,11 +93,14 @@ export const SourceItem: FC<SourceItemProps> = ({ source }) => {
                 ? "bg-blue-100 text-blue-700"
                 : source.type === "research"
                 ? "bg-purple-100 text-purple-700"
+                : source.type === "file"
+                ? "bg-pink-100 text-pink-700"
                 : "bg-gray-100 text-gray-700"
             }`}>
               {source.type === "url" ? "🔗" : 
                source.type === "snippet" ? "📝" : 
-               source.type === "research" ? "🔍" : "📋"} {source.type}
+               source.type === "research" ? "🔍" : 
+               source.type === "file" ? "📎" : "📋"} {source.type}
             </span>
             {getStatusIndicator()}
             <span className="text-xs text-gray-500">

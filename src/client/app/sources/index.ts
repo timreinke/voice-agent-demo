@@ -44,10 +44,10 @@ export namespace Sources {
   }
 }
 
-export type SourceType = "url" | "snippet" | "search_result" | "research";
+export type SourceType = "url" | "snippet" | "search_result" | "research" | "file";
 
 export type SourceSource =
-  | { type: "user"; method: "voice" | "paste" | "type" }
+  | { type: "user"; method: "voice" | "paste" | "type" | "file" }
   | { type: "agent"; agentId: string }
   | { type: "research"; query: string };
 
@@ -63,7 +63,7 @@ export interface Source {
   error?: string;
 }
 
-export type SourceContent = URLContent | SnippetContent | SearchResultContent | ResearchContent;
+export type SourceContent = URLContent | SnippetContent | SearchResultContent | ResearchContent | FileContent;
 
 export interface URLContent {
   type: "url";
@@ -95,6 +95,20 @@ export interface ResearchContent {
       relevance: string;
     }>;
     keyInsights: string[];
+  };
+}
+
+export interface FileContent {
+  type: "file";
+  filename: string;
+  mimeType: string;
+  size: number;
+  summary?: {
+    title: string;
+    summary: string;
+    keyPoints: string[];
+    contentType: string;
+    suggestedActions: string[];
   };
 }
 
