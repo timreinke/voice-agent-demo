@@ -5,6 +5,6 @@ export const researchAgent = () =>
   new Agent({
     name: "Research Assistant",
     instructions,
-    model: "gpt-4o-mini",
+    model: "gpt-4o",
     tools: [webSearchTool()],
   });
