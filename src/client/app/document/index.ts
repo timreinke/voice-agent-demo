@@ -27,6 +27,7 @@ export namespace Document {
 
   const state = Store.create({
     document: "",
+    currentSelection: null as string | null,
   });
 
   export function use() {
@@ -41,6 +42,13 @@ export namespace Document {
     state.set({
       ...state.get(),
       document,
+    });
+  }
+
+  export function setCurrentSelection(sourceSnippet: string | null) {
+    state.set({
+      ...state.get(),
+      currentSelection: sourceSnippet,
     });
   }
 

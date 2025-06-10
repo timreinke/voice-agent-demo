@@ -1,7 +1,10 @@
-import { FC } from "hono/jsx";
-import { Document } from "../app/document";
+import { FC, useRef, useEffect } from "hono/jsx";
+import { Document } from "../../app/document";
+import { useSelectionTracking } from "./hooks/useSelectionTracking";
 export const DocumentPanel: FC = () => {
   const { document } = Document.use();
+  const documentContainerRef = useRef<HTMLDivElement>(null);
+  const { renderHTML } = useSelectionTracking(documentContainerRef);
 
   const handleNew = () => {
     if (
@@ -12,6 +15,12 @@ export const DocumentPanel: FC = () => {
       Document.setDocument("");
     }
   };
+
+  useEffect(() => {
+    const htmlToRender = document.trim() === "" ? Document.getDefaultDocument() : document;
+    console.log("htmlToRender", htmlToRender);
+    renderHTML(htmlToRender);
+  }, [document, renderHTML]);
 
   return (
     <div className="h-full bg-transparent p-6 flex flex-col">
@@ -33,12 +42,12 @@ export const DocumentPanel: FC = () => {
       </div>
 
       <div className="flex-1 bg-white border border-gray-200 rounded-lg shadow-sm overflow-auto">
-        <div className="document-content p-8 max-w-4xl mx-auto">
-          {document.trim() === "" ? (
-            <div className="text-gray-400" dangerouslySetInnerHTML={{ __html: Document.getDefaultDocument() }} />
-          ) : (
-            <div dangerouslySetInnerHTML={{ __html: document }} />
-          )}
+        <div 
+          ref={documentContainerRef}
+          data-document-container="true"
+          className="document-content p-8 max-w-4xl mx-auto"
+        >
+          {/* Content will be rendered by useSelectionTracking */}
         </div>
       </div>
     </div>
