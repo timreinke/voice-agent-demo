@@ -32,17 +32,5 @@ export namespace Store {
 
   export const use = <T>(store: Store<T>) => {
     return useSyncExternalStore((cb) => store.subscribe(cb), () => store.get());
-    // return useSyncExternalStore(
-    //   () => {
-    //     console.log("subscribe");
-    //     return () => {
-    //       console.log("unsubscribe");
-    //     };
-    //   },
-    //   () => {
-    //     console.log("get");
-    //     return { isConnected: true };
-    //   }
-    // );
   };
 }
