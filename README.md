@@ -1,3 +1,5 @@
+**Note** mostly vibe coded, no code endorsed. turned into more of a UI experiment than any neat agent workflows. 
+
 # Agent SDK Voice Canvas
 
 A voice-driven document drafting experiment using specialized AI agents to research inputs and collaboratively edit documents through natural conversation.
