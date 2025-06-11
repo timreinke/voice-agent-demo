@@ -1,4 +1,6 @@
-**Note** mostly vibe coded, no code endorsed. turned into more of a UI experiment than any neat agent workflows. 
+**Note** mostly vibe coded, no code endorsed. turned into more of a UI experiment than any neat agent workflows.
+
+https://github.com/user-attachments/assets/809dfa1b-c835-4635-b2f0-278bbbf520d4
 
 # Agent SDK Voice Canvas
 
